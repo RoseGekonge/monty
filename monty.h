@@ -82,4 +82,40 @@ enum Date_Format_Modes
 	DF_FIFO
 };
 
+char **read_file(char *path, int *lines_count);
+char *read_word(char *str, int *offset);
+
+/* Executor */
+
+instruction_t *get_opcode_handlers(void);
+void execute_line(char *line, int line_num, stack_t **stack_values);
+
+/* Stack helpers */
+
+void push(stack_t **stack, int n);
+int pop(stack_t **stack);
+int dequeue(stack_t **stack);
+void enqueue(stack_t **stack, int n);
+stack_t *get_top_element(stack_t **stack);
+stack_t *get_bottom_element(stack_t **stack);
+
+/* Memory helpers */
+
+void malloc_failure(char failed);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+void mem_set(char *str, int n, char c);
+
+/* String utilities */
+
+int str_len(const char *str);
+char *str_cat(char *left, char *right, char can_free);
+char **str_split(char *str, char c, int *len_out, char can_free);
+
+/* Data validators */
+
+char is_integer(char *str);
+char is_ascii_char(int c);
+char is_whitespace(char c);
+
+
 #endif

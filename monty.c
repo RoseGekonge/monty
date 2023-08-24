@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "monty.h"
 
+static stack_t *Values;
 static char **Lines;
 static int Lines_Count;
 static int Current_Line;
