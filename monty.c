@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include "monty.h"
 
+static char **Lines;
+static int Lines_Count;
+static int Current_Line;
+static char Data_Format;
+
 /**
  * main - executes monty
  * @argc: number of arguments
@@ -11,8 +16,82 @@
 
 int main(int argc, char *argv[])
 {
-	int stack[];
-	int input;
-
-	if (strcmp(input, "push") == 1)
+	if (argc == 2)
 	{
+		Data_Format = DF_LIFO;
+		Lines = read_file(argv[1], &Lines_Count);
+		while (Current_Line < Lines_Count)
+		{
+			execute_line(Lines[Current_Line], Current_Line + 1, &Values);
+			Current_Line++;
+		}
+	}
+	else
+	{
+		write(STDERR_FILENO, "USAGE: monty file\n", 18);
+		exit(EXIT_FAILURE);
+	}
+	clean_up_program();
+	return (EXIT_SUCCESS);
+}
+
+/**
+ * get_data_mode - Returns a pointer to the interpreter's mode flag
+ *
+ * Return: A pointer to the interpreter's mode flag
+ */
+char *get_data_mode(void)
+{
+	return (&Data_Format);
+}
+
+/**
+ * get_lines - Retrieves the lines of the current file
+ *
+ * Return: The lines of the current file
+ */
+char **get_lines(void)
+{
+	return (Lines);
+}
+
+/**
+ * clean_up_program - Frees dynamically allocated memory blocks
+ */
+void clean_up_program(void)
+{
+	stack_t *node = Values, *tmp = NULL;
+	int i;
+
+	if (Lines != NULL)
+	{
+		for (i = 0; i < Lines_Count; i++)
+		{
+			if (Lines[i] != NULL)
+				free(Lines[i]);
+		}
+		if (Lines != NULL)
+			free(Lines);
+	}
+	if (node != NULL)
+	{
+		while ((node != NULL) && (node->prev != NULL))
+			node = node->prev;
+		while (node != NULL)
+		{
+			tmp = node->next;
+			free(node);
+			node = tmp;
+		}
+	}
+}
+
+/**
+ * exit_program - Safely exits the program with the given status code
+ * @status: The status code to exit with
+ */
+void exit_program(int status)
+{
+	clean_up_program();
+	exit(status);
+}
